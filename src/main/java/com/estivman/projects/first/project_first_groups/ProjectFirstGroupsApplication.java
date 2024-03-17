@@ -1,0 +1,13 @@
+package com.estivman.projects.first.project_first_groups;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ProjectFirstGroupsApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ProjectFirstGroupsApplication.class, args);
+	}
+
+}
