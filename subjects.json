@@ -1,0 +1,20 @@
+{
+    "subjects": [
+        {
+            "subjectCode": "MATH101",
+            "subjectName": "Matemáticas Básicas"
+        },
+        {
+            "subjectCode": "PHYS202",
+            "subjectName": "Física Avanzada"
+        },
+        {
+            "subjectCode": "CHEM303",
+            "subjectName": "Química Orgánica"
+        },
+        {
+            "subjectCode": "CS404",
+            "subjectName": "Introducción a la Ciencia de la Computación"
+        }
+    ]
+}

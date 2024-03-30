@@ -1,0 +1,29 @@
+{
+    "places": [
+        {
+            "placeId": "A",
+            "placeName": "Edificio A",
+            "placeAddress": "Calle Principal #123"
+        },
+        {
+            "placeId": "B",
+            "placeName": "Edificio B",
+            "placeAddress": "Avenida Central #456"
+        },
+        {
+            "placeId": "C",
+            "placeName": "Edificio C",
+            "placeAddress": "Calle Secundaria #789"
+        },
+        {
+            "placeId": "D",
+            "placeName": "Edificio D",
+            "placeAddress": "Avenida Perpendicular #321"
+        },
+        {
+            "placeId": "E",
+            "placeName": "Edificio E",
+            "placeAddress": "Avenida Widehardo #69"
+        }
+    ]
+}

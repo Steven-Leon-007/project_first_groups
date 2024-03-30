@@ -2,6 +2,8 @@ package com.estivman.projects.first.project_first_groups.model;
 
 import java.io.Serializable;
 
+import com.estivman.secondproject.DynamicMemory.UptcList;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +16,5 @@ import lombok.Setter;
 public class Group implements Serializable {
     private String subjectGroupCode;
     private String placeGroupId;
-    private String groupSchedules;
+    private UptcList<String> groupSchedules;
 }
