@@ -49,10 +49,15 @@ public class PlaceController {
     }
 
     @PutMapping()
-    public ResponseEntity<Object> putPlace(@RequestBody Place place) {
+    public ResponseEntity<Object> putPlace(@RequestBody UptcList<Place> places) {
         try {
-            placeService.updatePlace(place);
-            return ResponseEntity.status(HttpStatus.OK).body(place);
+            if (places.size() != 2) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid number of places specified");
+            }
+            Place placeSearched = places.get(0);
+            Place placeUpdated = places.get(1);
+            placeService.updatePlace(placeSearched, placeUpdated);
+            return ResponseEntity.status(HttpStatus.OK).body(placeUpdated);
         } catch (ProjectException e) {
             return ResponseEntity.status(e.getMenssage().getCodeHttp())
                     .body(e.getMenssage());

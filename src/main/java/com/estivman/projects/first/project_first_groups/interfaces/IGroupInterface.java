@@ -6,5 +6,10 @@ import com.estivman.secondproject.DynamicMemory.UptcList;
 
 public interface IGroupInterface {
     public UptcList<Group> getGroups() throws ProjectException;
+
     public Group addGroup(Group group) throws ProjectException;
+
+    public Group deleteGroup(Group groupToDelete) throws ProjectException;
+
+    public UptcList<Group> editGroup(Group groupSearched, Group groupUpdated) throws ProjectException;
 }

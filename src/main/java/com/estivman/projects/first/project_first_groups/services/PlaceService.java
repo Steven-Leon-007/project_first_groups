@@ -24,7 +24,7 @@ public class PlaceService implements IPlaceInterface {
         this.jsonFunctions = new JsonFunctions(placePath, placeRootElement);
         this.groupService = groupService;
     }
-    
+
     public UptcList<Place> getPlaces() throws ProjectException {
         try {
             places = jsonFunctions.getFromJSON(Place.class);
@@ -60,15 +60,18 @@ public class PlaceService implements IPlaceInterface {
 
     }
 
-    public UptcList<Place> updatePlace(Place placeSearched) throws ProjectException {
+    public UptcList<Place> updatePlace(Place placeSearched, Place placeUpdated) throws ProjectException {
         try {
             places = jsonFunctions.getFromJSON(Place.class);
+            int index = 0;
             for (Place place : places) {
                 if (doesPlaceMatch(placeSearched, place) && placeSearched != null) {
-                    place = placeSearched;
+                    places.set(index, placeUpdated);
                     jsonFunctions.postInJSON(places);
                     return places;
                 }
+                index++;
+
             }
         } catch (Exception e) {
             throw new ProjectException(ExceptionType.NOT_FOUND_FILE);

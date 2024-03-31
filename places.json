@@ -24,6 +24,11 @@
             "placeId": "E",
             "placeName": "Edificio E",
             "placeAddress": "Avenida Widehardo #69"
+        },
+        {
+            "placeId": "F",
+            "placeName": "Auditorio F",
+            "placeAddress": "Low Street Avenue #70"
         }
     ]
 }

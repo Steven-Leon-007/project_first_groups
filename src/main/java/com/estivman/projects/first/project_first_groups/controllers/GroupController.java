@@ -19,7 +19,7 @@ import com.estivman.secondproject.DynamicMemory.UptcList;
 @RestController
 @RequestMapping("/group")
 public class GroupController {
-    
+
     @Autowired
     private GroupService groupService;
 
@@ -48,24 +48,30 @@ public class GroupController {
     }
 
     @PutMapping()
-    public ResponseEntity<Object> putGroup(@RequestBody Group group) {
-        // try {
-        //     // service.addcity(CityDto.fromCityDto(cityDto1));
-            return ResponseEntity.status(HttpStatus.OK).body(group);
-        // } catch (ProjectException e) {
-        //     return ResponseEntity.status(e.getMenssage().getCodeHttp())
-        //             .body(e.getMenssage());
-        // }
+    public ResponseEntity<Object> putGroup(@RequestBody UptcList<Group> groups) {
+        try {
+            if(groups.size() != 2){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid number of groups specified");
+            }
+            Group groupSearched = groups.get(0);
+            Group groupUpdated = groups.get(1);
+
+            groupService.editGroup(groupSearched, groupUpdated);
+            return ResponseEntity.status(HttpStatus.OK).body(groupUpdated);
+        } catch (ProjectException e) {
+            return ResponseEntity.status(e.getMenssage().getCodeHttp())
+                    .body(e.getMenssage());
+        }
     }
 
     @DeleteMapping()
     public ResponseEntity<Object> deleteGroup(@RequestBody Group group) {
-        // try {
-        //     // service.removeCity(CityDto.fromCityDto(cityDto1));
+        try {
+            groupService.deleteGroup(group);
             return ResponseEntity.status(HttpStatus.OK).body(group);
-        // } catch (ProjectException e) {
-        //     return ResponseEntity.status(e.getMenssage().getCodeHttp())
-        //             .body(e.getMenssage());
-        // }
+        } catch (ProjectException e) {
+            return ResponseEntity.status(e.getMenssage().getCodeHttp())
+                    .body(e.getMenssage());
+        }
     }
 }

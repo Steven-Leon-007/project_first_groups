@@ -11,7 +11,7 @@ public interface IPlaceInterface {
 
     public UptcList<Place> removePlace(Place placeSearched) throws ProjectException;
 
-    public UptcList<Place> updatePlace(Place placeSearched) throws ProjectException;
+    public UptcList<Place> updatePlace(Place placeSearched, Place placeUpdated) throws ProjectException;
 
     public UptcList<Place> updatePlaceThroughParam(String searchField, String searchValue, Place placeUpdated)
             throws ProjectException;
