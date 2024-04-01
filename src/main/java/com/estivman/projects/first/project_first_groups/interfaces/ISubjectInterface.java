@@ -17,9 +17,4 @@ public interface ISubjectInterface {
     public UptcList<Subject> deleteSubjectThroughParam(String searchField, String searchValue)
             throws ProjectException;
 
-    public boolean isAttachedToGroup(Subject subject) throws ProjectException;
-
-    public boolean subjectMatch(Subject subjectSearched, Subject subject);
-
-    public Subject subjectExists(String searchValue);
 }

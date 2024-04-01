@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.estivman.projects.first.project_first_groups.dtos.PlaceDto;
 import com.estivman.projects.first.project_first_groups.exceptions.ProjectException;
 import com.estivman.projects.first.project_first_groups.model.Place;
 import com.estivman.projects.first.project_first_groups.services.PlaceService;
@@ -38,8 +39,10 @@ public class PlaceController {
     }
 
     @PostMapping()
-    public ResponseEntity<Object> postPlace(@RequestBody Place place) {
+    public ResponseEntity<Object> postPlace(@RequestBody PlaceDto dto) {
         try {
+            PlaceDto.validatePlace(dto);
+            Place place = PlaceDto.fromPlaceDto(dto);
             placeService.addPlace(place);
             return ResponseEntity.status(HttpStatus.OK).body(place);
         } catch (ProjectException e) {
@@ -49,13 +52,16 @@ public class PlaceController {
     }
 
     @PutMapping()
-    public ResponseEntity<Object> putPlace(@RequestBody UptcList<Place> places) {
+    public ResponseEntity<Object> putPlace(@RequestBody UptcList<PlaceDto> placesDto) {
         try {
-            if (places.size() != 2) {
+            if (placesDto.size() != 2) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid number of places specified");
             }
-            Place placeSearched = places.get(0);
-            Place placeUpdated = places.get(1);
+            PlaceDto.validatePlace(placesDto.get(0));
+            PlaceDto.validatePlace(placesDto.get(1));
+
+            Place placeSearched = PlaceDto.fromPlaceDto(placesDto.get(0));
+            Place placeUpdated = PlaceDto.fromPlaceDto(placesDto.get(1));
             placeService.updatePlace(placeSearched, placeUpdated);
             return ResponseEntity.status(HttpStatus.OK).body(placeUpdated);
         } catch (ProjectException e) {
@@ -66,8 +72,10 @@ public class PlaceController {
 
     @PutMapping("/putPlaceParam")
     public ResponseEntity<Object> putPlaceParam(@RequestParam String searchField, @RequestParam String searchValue,
-            @RequestBody Place place) {
+            @RequestBody PlaceDto placeDto) {
         try {
+            PlaceDto.validatePlace(placeDto);
+            Place place = PlaceDto.fromPlaceDto(placeDto);
             placeService.updatePlaceThroughParam(searchField, searchValue, place);
             return ResponseEntity.status(HttpStatus.OK).body(place);
         } catch (ProjectException e) {
@@ -77,8 +85,10 @@ public class PlaceController {
     }
 
     @DeleteMapping()
-    public ResponseEntity<Object> deletePlace(@RequestBody Place place) {
+    public ResponseEntity<Object> deletePlace(@RequestBody PlaceDto dto) {
         try {
+            PlaceDto.validatePlace(dto);
+            Place place = PlaceDto.fromPlaceDto(dto);
             placeService.removePlace(place);
             return ResponseEntity.status(HttpStatus.OK).body(place);
         } catch (ProjectException e) {

@@ -18,7 +18,4 @@ public interface IPlaceInterface {
 
     public UptcList<Place> deletePlaceThroughParam(String searchField, String searchValue) throws ProjectException;
 
-    public boolean isAttachedToGroup(Place place) throws ProjectException;
-
-    public boolean doesPlaceMatch(Place placeSearched, Place place);
 }

@@ -103,7 +103,7 @@ public class PlaceService implements IPlaceInterface {
 
     }
 
-    public boolean isAttachedToGroup(Place place) throws ProjectException {
+    private boolean isAttachedToGroup(Place place) throws ProjectException {
         UptcList<Group> groupList = new UptcList<Group>();
         try {
             groupList = groupService.getGroups();
@@ -118,7 +118,7 @@ public class PlaceService implements IPlaceInterface {
         return false;
     }
 
-    public boolean doesPlaceMatch(Place placeSearched, Place place) {
+    private boolean doesPlaceMatch(Place placeSearched, Place place) {
         return placeSearched.getPlaceId().equals(place.getPlaceId())
                 && placeSearched.getPlaceAddress().equals(place.getPlaceAddress())
                 && placeSearched.getPlaceName().equals(place.getPlaceName());

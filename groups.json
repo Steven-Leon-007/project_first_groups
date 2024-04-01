@@ -18,7 +18,7 @@
             ]
         },
         {
-            "placeGroupId": "C",
+            "placeGroupId": "B",
             "subjectGroupCode": "CHEM303",
             "groupSchedules": [
                 "Monday 2:00 PM - 4:00 PM",
@@ -36,6 +36,22 @@
         {
             "placeGroupId": "E",
             "subjectGroupCode": "CS404",
+            "groupSchedules": [
+                "Tuesday 1:00 PM - 3:00 PM",
+                "Thursday 1:00 PM - 3:00 PM"
+            ]
+        },
+        {
+            "placeGroupId": "E",
+            "subjectGroupCode": "FIL505",
+            "groupSchedules": [
+                "Monday 8:00 AM - 10:00 AM",
+                "Friday 8:00 AM - 10:00 AM"
+            ]
+        },
+        {
+            "placeGroupId": "F",
+            "subjectGroupCode": "MATH101",
             "groupSchedules": [
                 "Tuesday 1:00 PM - 3:00 PM",
                 "Thursday 1:00 PM - 3:00 PM"

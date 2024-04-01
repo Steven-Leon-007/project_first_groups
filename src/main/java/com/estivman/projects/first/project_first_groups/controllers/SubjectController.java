@@ -1,7 +1,6 @@
 package com.estivman.projects.first.project_first_groups.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.estivman.projects.first.project_first_groups.dtos.SubjectDto;
 import com.estivman.projects.first.project_first_groups.exceptions.ProjectException;
 import com.estivman.projects.first.project_first_groups.model.Subject;
 import com.estivman.projects.first.project_first_groups.services.SubjectService;
@@ -39,8 +39,10 @@ public class SubjectController {
     }
 
     @PostMapping()
-    public ResponseEntity<Object> postSubject(@RequestBody Subject subject) {
+    public ResponseEntity<Object> postSubject(@RequestBody SubjectDto subjectDto) {
         try {
+            SubjectDto.validateSubject(subjectDto);
+            Subject subject = SubjectDto.fromSubjectDto(subjectDto);
             subjectService.addSubject(subject);
             return ResponseEntity.status(HttpStatus.OK).body(subject);
         } catch (ProjectException e) {
@@ -53,8 +55,11 @@ public class SubjectController {
 
     @PutMapping()
     public ResponseEntity<Object> putSubject(@RequestParam String searchField, @RequestParam String searchValue,
-            @RequestBody Subject subjectUpdated) {
+            @RequestBody SubjectDto subjectDto) {
         try {
+            SubjectDto.validateSubject(subjectDto);
+            Subject subjectUpdated = SubjectDto.fromSubjectDto(subjectDto);
+
             subjectService.updateSubject(searchField, searchValue, subjectUpdated);
             return ResponseEntity.status(HttpStatus.OK).body(subjectUpdated);
         } catch (ProjectException e) {
@@ -64,8 +69,10 @@ public class SubjectController {
     }
 
     @DeleteMapping()
-    public ResponseEntity<Object> deleteSubject(@RequestBody Subject subject) {
+    public ResponseEntity<Object> deleteSubject(@RequestBody SubjectDto subjectDto) {
         try {
+            SubjectDto.validateSubject(subjectDto);
+            Subject subject = SubjectDto.fromSubjectDto(subjectDto);
             subjectService.removeSubject(subject);
             return ResponseEntity.status(HttpStatus.OK).body(subject);
         } catch (ProjectException e) {

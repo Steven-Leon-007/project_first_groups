@@ -88,7 +88,7 @@ public class SubjectService implements ISubjectInterface {
         }
     }
 
-    public boolean isAttachedToGroup(Subject subject) throws ProjectException {
+    private boolean isAttachedToGroup(Subject subject) throws ProjectException {
         UptcList<Group> groupList = new UptcList<Group>();
         try {
             groupList = groupService.getGroups();
@@ -103,12 +103,12 @@ public class SubjectService implements ISubjectInterface {
         return false;
     }
 
-    public boolean subjectMatch(Subject subjectSearched, Subject subject) {
+    private boolean subjectMatch(Subject subjectSearched, Subject subject) {
         return subjectSearched.getSubjectName().equals(subject.getSubjectName())
                 && subjectSearched.getSubjectCode().equals(subject.getSubjectCode());
     }
 
-    public Subject subjectExists(String searchValue) {
+    private Subject subjectExists(String searchValue) {
         for (Subject subject : subjects) {
             if (subject.getSubjectName().equals(searchValue) || subject.getSubjectCode().equals(searchValue)) {
                 return subject;

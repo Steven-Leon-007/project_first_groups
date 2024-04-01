@@ -15,6 +15,10 @@
         {
             "subjectCode": "CS404",
             "subjectName": "Introducción a la Ciencia de la Computación"
+        },
+        {
+            "subjectCode": "FIL505",
+            "subjectName": "Filosofia experimental"
         }
     ]
 }
