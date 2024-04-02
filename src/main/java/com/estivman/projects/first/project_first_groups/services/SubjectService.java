@@ -17,6 +17,7 @@ public class SubjectService implements ISubjectInterface {
     private final JsonFunctions jsonFunctions;
     private final GroupService groupService;
     private UptcList<Subject> subjects = new UptcList<Subject>();
+    private boolean isDataLoaded = false;
 
     @Autowired
     public SubjectService(@Value("${json.subject.path}") String subjectPath,
@@ -26,30 +27,59 @@ public class SubjectService implements ISubjectInterface {
         this.groupService = groupService;
     }
 
-    public UptcList<Subject> getSubjects() throws ProjectException {
+    public UptcList<Subject> loadSubjects() throws ProjectException {
         try {
             subjects = jsonFunctions.getFromJSON(Subject.class);
+            isDataLoaded = true;
         } catch (Exception e) {
             throw new ProjectException(ExceptionType.NOT_FOUND_FILE);
         }
         return subjects;
     }
 
-    public void addSubject(Subject subject) throws ProjectException {
+    public UptcList<Subject> getSubjects() throws ProjectException {
         try {
-            subjects.add(subject);
-            jsonFunctions.addObjectToJSON(subject);
+            return subjects;
         } catch (Exception e) {
             throw new ProjectException(ExceptionType.NOT_FOUND_FILE);
         }
     }
 
-    public UptcList<Subject> updateSubject(String searchField, String searchValue, Subject subjectUpdated)
+    public void addSubject(Subject subject) throws ProjectException {
+        try {
+            subjects.add(subject);
+            if (isDataLoaded) {
+                jsonFunctions.addObjectToJSON(subject);
+            }
+        } catch (Exception e) {
+            throw new ProjectException(ExceptionType.NOT_FOUND_FILE);
+        }
+    }
+
+    public UptcList<Subject> updateSubjectThroughParam(String searchField, String searchValue, Subject subjectUpdated)
             throws ProjectException {
         try {
-            subjects = jsonFunctions.getFromJSON(Subject.class);
             if (subjectUpdated != null) {
                 subjects = jsonFunctions.putInJSON(subjects, searchField, searchValue, subjectUpdated);
+            }
+            return subjects;
+        } catch (Exception e) {
+            throw new ProjectException(ExceptionType.NOT_FOUND);
+        }
+    }
+
+    public UptcList<Subject> updateSubject(Subject subjectSearched, Subject subjectUpdated)
+            throws ProjectException {
+        try {
+
+            for (int i = 0; i < subjects.size(); i++) {
+                if (subjectMatch(subjectSearched, subjectUpdated)) {
+                    subjects.set(i, subjectUpdated);
+                    if(isDataLoaded){
+                        jsonFunctions.postInJSON(subjects);
+                    }
+                    return subjects;
+                }
             }
             return subjects;
         } catch (Exception e) {
@@ -60,7 +90,6 @@ public class SubjectService implements ISubjectInterface {
     public UptcList<Subject> removeSubject(Subject subjectSearched) throws ProjectException {
 
         try {
-            subjects = jsonFunctions.getFromJSON(Subject.class);
             for (Subject subject : subjects) {
                 if (subjectMatch(subjectSearched, subject) && !isAttachedToGroup(subject)) {
                     subjects.remove(subject);
@@ -77,7 +106,6 @@ public class SubjectService implements ISubjectInterface {
     public UptcList<Subject> deleteSubjectThroughParam(String searchField, String searchValue)
             throws ProjectException {
         try {
-            subjects = jsonFunctions.getFromJSON(Subject.class);
             if (!isAttachedToGroup(subjectExists(searchValue))) {
                 subjects = jsonFunctions.deleteFromJSON(subjects, searchField, searchValue);
                 return subjects;

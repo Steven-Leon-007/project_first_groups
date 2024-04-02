@@ -25,7 +25,19 @@ public class PlaceController {
     @Autowired
     private PlaceService placeService;
 
-    @GetMapping()
+    @GetMapping("/loadPlaces")
+    public ResponseEntity<Object> loadPlaces() {
+        UptcList<Place> places;
+        try {
+            places = placeService.loadPlaces();
+            return ResponseEntity.status(HttpStatus.OK).body(places);
+        } catch (ProjectException e) {
+            return ResponseEntity.status(e.getMenssage().getCodeHttp())
+                    .body(e.getMenssage());
+        }
+
+    }
+    @GetMapping("/getPlaces")
     public ResponseEntity<Object> getPlaces() {
         UptcList<Place> places;
         try {

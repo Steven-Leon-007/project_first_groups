@@ -5,16 +5,21 @@ import com.estivman.projects.first.project_first_groups.model.Subject;
 import com.estivman.secondproject.DynamicMemory.UptcList;
 
 public interface ISubjectInterface {
-    public UptcList<Subject> getSubjects() throws ProjectException;
+        public UptcList<Subject> loadSubjects() throws ProjectException;
 
-    public void addSubject(Subject subject) throws ProjectException;
+        public UptcList<Subject> getSubjects() throws ProjectException;
 
-    public UptcList<Subject> updateSubject(String searchField, String searchValue, Subject subjectUpdated)
+        public void addSubject(Subject subject) throws ProjectException;
+
+        public UptcList<Subject> updateSubjectThroughParam(String searchField, String searchValue, Subject subjectUpdated)
+                        throws ProjectException;
+
+        public UptcList<Subject> updateSubject(Subject subjectSearched, Subject subjectUpdated)
             throws ProjectException;
 
-    public UptcList<Subject> removeSubject(Subject subjectSearched) throws ProjectException;
+        public UptcList<Subject> removeSubject(Subject subjectSearched) throws ProjectException;
 
-    public UptcList<Subject> deleteSubjectThroughParam(String searchField, String searchValue)
-            throws ProjectException;
+        public UptcList<Subject> deleteSubjectThroughParam(String searchField, String searchValue)
+                        throws ProjectException;
 
 }

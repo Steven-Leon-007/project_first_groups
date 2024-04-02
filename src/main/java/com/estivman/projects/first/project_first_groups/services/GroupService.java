@@ -20,6 +20,7 @@ public class GroupService implements IGroupInterface {
     private final PlaceService placeService;
     private final SubjectService subjectService;
     private UptcList<Group> groups = new UptcList<Group>();
+    private boolean isDataLoaded = false;
 
     @Autowired
     public GroupService(@Value("${json.group.path}") String groupPath,
@@ -32,7 +33,16 @@ public class GroupService implements IGroupInterface {
 
     public UptcList<Group> getGroups() throws ProjectException {
         try {
+            return groups;
+        } catch (Exception e) {
+            throw new ProjectException(ExceptionType.NOT_FOUND);
+        }
+    }
+
+    public UptcList<Group> loadGroups() throws ProjectException {
+        try {
             groups = jsonFunctions.getFromJSON(Group.class);
+            isDataLoaded = true;
         } catch (Exception e) {
             throw new ProjectException(ExceptionType.NOT_FOUND_FILE);
         }
@@ -55,7 +65,9 @@ public class GroupService implements IGroupInterface {
 
             if (doesSubjectExist(subject) && (validatePlaceExist(place) || !isScheduleAlready)) {
                 groups.add(groupAdded);
-                jsonFunctions.addObjectToJSON(groupAdded);
+                if (isDataLoaded) {
+                    jsonFunctions.addObjectToJSON(groupAdded);
+                }
                 return groupAdded;
             }
         } catch (Exception e) {
@@ -66,13 +78,14 @@ public class GroupService implements IGroupInterface {
 
     public Group deleteGroup(Group groupToDelete) throws ProjectException {
         try {
-            groups = jsonFunctions.getFromJSON(Group.class);
             // to delete a group is not necessary validate anything
             // actually, just it's existence
             for (Group group : groups) {
                 if (doesGroupExists(group, groupToDelete)) {
                     groups.remove(group);
-                    jsonFunctions.postInJSON(groups);
+                    if(isDataLoaded){
+                        jsonFunctions.postInJSON(groups);
+                    }
                     return group;
                 }
             }
@@ -91,7 +104,6 @@ public class GroupService implements IGroupInterface {
         boolean isScheduleAlready = false;
         int index = 0;
         try {
-            groups = jsonFunctions.getFromJSON(Group.class);
             for (Group group : groups) {
                 if (isScheduleSame(group.getGroupSchedules(), groupUpdated.getGroupSchedules())) {
                     isScheduleAlready = true;
@@ -101,7 +113,9 @@ public class GroupService implements IGroupInterface {
                 if (doesGroupExists(group, groupSearched) && doesSubjectExist(subject)
                         && (validatePlaceExist(place) || !isScheduleAlready)) {
                     groups.set(index, groupUpdated);
-                    jsonFunctions.postInJSON(groups);
+                    if(isDataLoaded){
+                        jsonFunctions.postInJSON(groups);
+                    }
                     return groups;
                 }
                 index++;

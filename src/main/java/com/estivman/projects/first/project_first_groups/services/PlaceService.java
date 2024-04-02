@@ -17,6 +17,7 @@ public class PlaceService implements IPlaceInterface {
     private final JsonFunctions jsonFunctions;
     private final GroupService groupService;
     private UptcList<Place> places = new UptcList<Place>();
+    private boolean isDataLoaded = false;
 
     @Autowired
     public PlaceService(@Value("${json.place.path}") String placePath,
@@ -25,19 +26,30 @@ public class PlaceService implements IPlaceInterface {
         this.groupService = groupService;
     }
 
-    public UptcList<Place> getPlaces() throws ProjectException {
+    public UptcList<Place> loadPlaces() throws ProjectException {
         try {
             places = jsonFunctions.getFromJSON(Place.class);
+            isDataLoaded = true;
         } catch (Exception e) {
             throw new ProjectException(ExceptionType.NOT_FOUND_FILE);
         }
         return places;
     }
 
+    public UptcList<Place> getPlaces() throws ProjectException {
+        try {
+            return places;
+        } catch (Exception e) {
+            throw new ProjectException(ExceptionType.NOT_FOUND_FILE);
+        }
+    }
+
     public void addPlace(Place place) throws ProjectException {
         try {
             places.add(place);
-            jsonFunctions.addObjectToJSON(place);
+            if (isDataLoaded) {
+                jsonFunctions.addObjectToJSON(place);
+            }
         } catch (Exception e) {
             throw new ProjectException(ExceptionType.NOT_FOUND_FILE);
         }
@@ -45,11 +57,12 @@ public class PlaceService implements IPlaceInterface {
 
     public UptcList<Place> removePlace(Place placeSearched) throws ProjectException {
         try {
-            places = jsonFunctions.getFromJSON(Place.class);
             for (Place place : places) {
                 if (doesPlaceMatch(placeSearched, place) && !isAttachedToGroup(place)) {
                     places.remove(place);
-                    jsonFunctions.postInJSON(places);
+                    if (isDataLoaded) {
+                        jsonFunctions.postInJSON(places);
+                    }
                     return places;
                 }
             }
@@ -62,12 +75,13 @@ public class PlaceService implements IPlaceInterface {
 
     public UptcList<Place> updatePlace(Place placeSearched, Place placeUpdated) throws ProjectException {
         try {
-            places = jsonFunctions.getFromJSON(Place.class);
             int index = 0;
             for (Place place : places) {
                 if (doesPlaceMatch(placeSearched, place) && placeSearched != null) {
                     places.set(index, placeUpdated);
-                    jsonFunctions.postInJSON(places);
+                    if (isDataLoaded) {
+                        jsonFunctions.postInJSON(places);
+                    }
                     return places;
                 }
                 index++;
@@ -83,7 +97,6 @@ public class PlaceService implements IPlaceInterface {
     public UptcList<Place> updatePlaceThroughParam(String searchField, String searchValue, Place placeUpdated)
             throws ProjectException {
         try {
-            places = jsonFunctions.getFromJSON(Place.class);
             places = jsonFunctions.putInJSON(places, searchField, searchValue, placeUpdated);
         } catch (Exception e) {
             throw new ProjectException(ExceptionType.NOT_FOUND_FILE);
@@ -94,7 +107,6 @@ public class PlaceService implements IPlaceInterface {
 
     public UptcList<Place> deletePlaceThroughParam(String searchField, String searchValue) throws ProjectException {
         try {
-            places = jsonFunctions.getFromJSON(Place.class);
             places = jsonFunctions.deleteFromJSON(places, searchField, searchValue);
         } catch (Exception e) {
             throw new ProjectException(ExceptionType.NOT_FOUND_FILE);

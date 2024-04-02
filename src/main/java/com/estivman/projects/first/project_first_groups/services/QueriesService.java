@@ -28,9 +28,9 @@ public class QueriesService implements IQueriesInterface{
     }
 
     public void loadAllServices() throws ProjectException {
-        groups = groupService.getGroups();
-        subjects = subjectService.getSubjects();
-        placeService.getPlaces();
+        groups = groupService.loadGroups();
+        subjects = subjectService.loadSubjects();
+        placeService.loadPlaces();
     }
 
     public UptcList<Subject> subjectsWithSamePlace() throws ProjectException {

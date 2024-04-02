@@ -5,6 +5,8 @@ import com.estivman.projects.first.project_first_groups.model.Place;
 import com.estivman.secondproject.DynamicMemory.UptcList;
 
 public interface IPlaceInterface {
+    public UptcList<Place> loadPlaces() throws ProjectException;
+
     public UptcList<Place> getPlaces() throws ProjectException;
 
     public void addPlace(Place place) throws ProjectException;

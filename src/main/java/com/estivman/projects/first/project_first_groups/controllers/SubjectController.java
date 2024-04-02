@@ -25,7 +25,19 @@ public class SubjectController {
     @Autowired
     private SubjectService subjectService;
     
-    @GetMapping()
+    @GetMapping("/loadSubjects")
+    public ResponseEntity<Object> loadSubjects() {
+        UptcList<Subject> subjects;
+        try {
+            subjects = subjectService.loadSubjects();
+            return ResponseEntity.status(HttpStatus.OK).body(subjects);
+        } catch (ProjectException e) {
+            return ResponseEntity.status(e.getMenssage().getCodeHttp())
+                    .body(e.getMenssage());
+        }
+
+    }
+    @GetMapping("/getSubjects")
     public ResponseEntity<Object> getSubjects() {
         UptcList<Subject> subjects;
         try {
@@ -53,14 +65,32 @@ public class SubjectController {
 
 
 
-    @PutMapping()
-    public ResponseEntity<Object> putSubject(@RequestParam String searchField, @RequestParam String searchValue,
+    @PutMapping("/param")
+    public ResponseEntity<Object> putSubjectThroughParam(@RequestParam String searchField, @RequestParam String searchValue,
             @RequestBody SubjectDto subjectDto) {
         try {
             SubjectDto.validateSubject(subjectDto);
             Subject subjectUpdated = SubjectDto.fromSubjectDto(subjectDto);
 
-            subjectService.updateSubject(searchField, searchValue, subjectUpdated);
+            subjectService.updateSubjectThroughParam(searchField, searchValue, subjectUpdated);
+            return ResponseEntity.status(HttpStatus.OK).body(subjectUpdated);
+        } catch (ProjectException e) {
+            return ResponseEntity.status(e.getMenssage().getCodeHttp())
+                    .body(e.getMenssage());
+        }
+    }
+
+    @PutMapping()
+    public ResponseEntity<Object> putSubject(@RequestParam UptcList<SubjectDto> subjectDto) {
+        try {
+            SubjectDto.validateSubject(subjectDto.get(0));
+            SubjectDto.validateSubject(subjectDto.get(1));
+
+            Subject subjectSearched = SubjectDto.fromSubjectDto(subjectDto.get(0));
+            Subject subjectUpdated = SubjectDto.fromSubjectDto(subjectDto.get(1));
+
+
+            subjectService.updateSubject(subjectSearched, subjectUpdated);
             return ResponseEntity.status(HttpStatus.OK).body(subjectUpdated);
         } catch (ProjectException e) {
             return ResponseEntity.status(e.getMenssage().getCodeHttp())

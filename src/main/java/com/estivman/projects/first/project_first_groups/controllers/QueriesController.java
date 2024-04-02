@@ -20,13 +20,11 @@ public class QueriesController {
 
     @Autowired
     private QueriesService loaderService;
-    private boolean isDataLoaded = false;
 
     @GetMapping("/load")
     public ResponseEntity<Object> loadData() {
         try {
             loaderService.loadAllServices();
-            isDataLoaded = true;
             return ResponseEntity.status(HttpStatus.OK).body("All data loaded successfully");
         } catch (ProjectException e) {
             return ResponseEntity.status(e.getMenssage().getCodeHttp())
@@ -38,17 +36,15 @@ public class QueriesController {
     @GetMapping("/subject-places")
     public ResponseEntity<Object> subjectsWithSamePlace() {
         try {
-            if (isDataLoaded) {
-                UptcList<Subject> subjectsFiltered;
+            UptcList<Subject> subjectsFiltered;
 
-                subjectsFiltered = loaderService.subjectsWithSamePlace();
-                return ResponseEntity.status(HttpStatus.OK).body(subjectsFiltered);
-            }
+            subjectsFiltered = loaderService.subjectsWithSamePlace();
+            return ResponseEntity.status(HttpStatus.OK).body(subjectsFiltered);
+
         } catch (ProjectException e) {
             return ResponseEntity.status(e.getMenssage().getCodeHttp())
                     .body(e.getMenssage());
         }
-        return null;
 
     }
 
@@ -57,17 +53,16 @@ public class QueriesController {
             @RequestParam("placeName") String placeName,
             @RequestParam("placeAddress") String placeAddress) {
         try {
-            if (isDataLoaded) {
-                UptcList<Subject> subjectsFiltered;
-                Place place = new Place(placeId, placeName, placeAddress);
-                subjectsFiltered = loaderService.searchSubjectsWithSamePlace(place);
-                return ResponseEntity.status(HttpStatus.OK).body(subjectsFiltered);
-            }
+
+            UptcList<Subject> subjectsFiltered;
+            Place place = new Place(placeId, placeName, placeAddress);
+            subjectsFiltered = loaderService.searchSubjectsWithSamePlace(place);
+            return ResponseEntity.status(HttpStatus.OK).body(subjectsFiltered);
+
         } catch (ProjectException e) {
             return ResponseEntity.status(e.getMenssage().getCodeHttp())
                     .body(e.getMenssage());
         }
-        return null;
 
     }
 

@@ -24,7 +24,19 @@ public class GroupController {
     @Autowired
     private GroupService groupService;
 
-    @GetMapping()
+    @GetMapping("/loadGroups")
+    public ResponseEntity<Object> loadGroups() {
+        UptcList<Group> groups;
+        try {
+            groups = groupService.loadGroups();
+            return ResponseEntity.status(HttpStatus.OK).body(groups);
+        } catch (ProjectException e) {
+            return ResponseEntity.status(e.getMenssage().getCodeHttp())
+                    .body(e.getMenssage());
+        }
+
+    }
+    @GetMapping("/getGroups")
     public ResponseEntity<Object> getGroups() {
         UptcList<Group> groups;
         try {
