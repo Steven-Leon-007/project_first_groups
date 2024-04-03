@@ -42,10 +42,12 @@ public class GroupDto implements Serializable {
     }
 
     public static void validateGroup(GroupDto dto) throws ProjectException {
-        if (dto.getPlaceGroupId() == null || dto.getSubjectGroupCode() == null || dto.getGroupSchedules() == null ||
-                dto.getPlaceGroupId().isEmpty() || dto.getSubjectGroupCode().isEmpty()
-                || dto.getGroupSchedules().isEmpty()) {
+        if (dto.getPlaceGroupId() == null || dto.getSubjectGroupCode() == null || dto.getGroupSchedules() == null) {
             throw new ProjectException(ExceptionType.INFORMATION_INCOMPLETE);
+        }
+        else if( dto.getGroupSchedules().size() > 3){
+            throw new ProjectException(ExceptionType.INDEX_ARRAY_SURPASSED);
+
         }
     }
 }

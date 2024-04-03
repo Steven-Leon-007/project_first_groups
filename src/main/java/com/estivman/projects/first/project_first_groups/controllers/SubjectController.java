@@ -81,7 +81,7 @@ public class SubjectController {
     }
 
     @PutMapping()
-    public ResponseEntity<Object> putSubject(@RequestParam UptcList<SubjectDto> subjectDto) {
+    public ResponseEntity<Object> putSubject(@RequestBody UptcList<SubjectDto> subjectDto) {
         try {
             SubjectDto.validateSubject(subjectDto.get(0));
             SubjectDto.validateSubject(subjectDto.get(1));

@@ -8,6 +8,7 @@ public enum ExceptionType {
     OBJECT_DELETE_NOT_ALLOWED(HttpStatus.CONFLICT.value(), "The requested object can't be deleted", 409),
     OBJECT_UPDATE_NOT_ALLOWED(HttpStatus.CONFLICT.value(), "The requested object can't be updated", 409),
     INFORMATION_INCOMPLETE(HttpStatus.BAD_REQUEST.value(), "One or more fields in the request are incomplete", 430),
+    INDEX_ARRAY_SURPASSED(HttpStatus.BAD_REQUEST.value(), "The amount of schedules should be lower than 3", 430),
     NOT_FOUND_FILE(HttpStatus.BAD_REQUEST.value(), "The requested file was not found", 420),
 
     SAVE(HttpStatus.OK.value(), "Object saved successfully", 210);
