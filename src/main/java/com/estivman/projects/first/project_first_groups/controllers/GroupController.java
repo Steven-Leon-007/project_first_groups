@@ -15,7 +15,7 @@ import com.estivman.projects.first.project_first_groups.dtos.GroupDto;
 import com.estivman.projects.first.project_first_groups.exceptions.ProjectException;
 import com.estivman.projects.first.project_first_groups.model.Group;
 import com.estivman.projects.first.project_first_groups.services.GroupService;
-import com.estivman.secondproject.DynamicMemory.UptcList;
+import com.estivman.uptc_list_library.DynamicMemory.UptcList;
 
 @RestController
 @RequestMapping("/group")
@@ -24,19 +24,8 @@ public class GroupController {
     @Autowired
     private GroupService groupService;
 
-    @GetMapping("/loadGroups")
-    public ResponseEntity<Object> loadGroups() {
-        UptcList<Group> groups;
-        try {
-            groups = groupService.loadGroups();
-            return ResponseEntity.status(HttpStatus.OK).body(groups);
-        } catch (ProjectException e) {
-            return ResponseEntity.status(e.getMenssage().getCodeHttp())
-                    .body(e.getMenssage());
-        }
-
-    }
-    @GetMapping("/getGroups")
+    
+    @GetMapping()
     public ResponseEntity<Object> getGroups() {
         UptcList<Group> groups;
         try {

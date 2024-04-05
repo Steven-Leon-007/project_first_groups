@@ -1,32 +1,26 @@
 package com.estivman.projects.first.project_first_groups.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import com.estivman.json.json_library.Services.JsonFunctions;
 import com.estivman.projects.first.project_first_groups.exceptions.ExceptionType;
 import com.estivman.projects.first.project_first_groups.exceptions.ProjectException;
 import com.estivman.projects.first.project_first_groups.interfaces.IGroupInterface;
 import com.estivman.projects.first.project_first_groups.model.Group;
 import com.estivman.projects.first.project_first_groups.model.Place;
 import com.estivman.projects.first.project_first_groups.model.Subject;
-import com.estivman.secondproject.DynamicMemory.UptcList;
+import com.estivman.uptc_list_library.DynamicMemory.UptcList;
 
 @Service
 public class GroupService implements IGroupInterface {
-    private final JsonFunctions jsonFunctions;
     private final PlaceService placeService;
     private final SubjectService subjectService;
     private UptcList<Group> groups = new UptcList<Group>();
-    private boolean isDataLoaded = false;
 
     @Autowired
-    public GroupService(@Value("${json.group.path}") String groupPath,
-            @Value("${json.group.root-element}") String groupRootElement, @Lazy PlaceService placeService,
+    public GroupService(@Lazy PlaceService placeService,
             @Lazy SubjectService subjectService) {
-        this.jsonFunctions = new JsonFunctions(groupPath, groupRootElement);
         this.placeService = placeService;
         this.subjectService = subjectService;
     }
@@ -39,20 +33,8 @@ public class GroupService implements IGroupInterface {
         }
     }
 
-    public UptcList<Group> loadGroups() throws ProjectException {
-        try {
-            groups = jsonFunctions.getFromJSON(Group.class);
-            isDataLoaded = true;
-        } catch (Exception e) {
-            throw new ProjectException(ExceptionType.NOT_FOUND_FILE);
-        }
-        return groups;
-    }
-
     public Group addGroup(Group groupAdded) throws ProjectException {
         try {
-            // So, for add a group must exists the subject and the place too
-
             String place = groupAdded.getPlaceGroupId();
             String subject = groupAdded.getSubjectGroupCode();
             boolean isScheduleAlready = false;
@@ -65,9 +47,6 @@ public class GroupService implements IGroupInterface {
 
             if (doesSubjectExist(subject) && (validatePlaceExist(place) || !isScheduleAlready)) {
                 groups.add(groupAdded);
-                if (isDataLoaded) {
-                    jsonFunctions.addObjectToJSON(groupAdded);
-                }
                 return groupAdded;
             }
         } catch (Exception e) {
@@ -78,14 +57,9 @@ public class GroupService implements IGroupInterface {
 
     public Group deleteGroup(Group groupToDelete) throws ProjectException {
         try {
-            // to delete a group is not necessary validate anything
-            // actually, just it's existence
             for (Group group : groups) {
                 if (doesGroupExists(group, groupToDelete)) {
                     groups.remove(group);
-                    if(isDataLoaded){
-                        jsonFunctions.postInJSON(groups);
-                    }
                     return group;
                 }
             }
@@ -113,9 +87,6 @@ public class GroupService implements IGroupInterface {
                 if (doesGroupExists(group, groupSearched) && doesSubjectExist(subject)
                         && (validatePlaceExist(place) || !isScheduleAlready)) {
                     groups.set(index, groupUpdated);
-                    if(isDataLoaded){
-                        jsonFunctions.postInJSON(groups);
-                    }
                     return groups;
                 }
                 index++;

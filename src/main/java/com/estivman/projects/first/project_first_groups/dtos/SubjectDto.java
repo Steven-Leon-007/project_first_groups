@@ -5,7 +5,7 @@ import java.io.Serializable;
 import com.estivman.projects.first.project_first_groups.exceptions.ExceptionType;
 import com.estivman.projects.first.project_first_groups.exceptions.ProjectException;
 import com.estivman.projects.first.project_first_groups.model.Subject;
-import com.estivman.secondproject.DynamicMemory.UptcList;
+import com.estivman.uptc_list_library.DynamicMemory.UptcList;
 
 import lombok.Getter;
 import lombok.Setter;

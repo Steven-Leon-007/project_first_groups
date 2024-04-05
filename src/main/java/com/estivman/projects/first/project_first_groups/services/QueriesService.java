@@ -9,33 +9,26 @@ import com.estivman.projects.first.project_first_groups.interfaces.IQueriesInter
 import com.estivman.projects.first.project_first_groups.model.Group;
 import com.estivman.projects.first.project_first_groups.model.Place;
 import com.estivman.projects.first.project_first_groups.model.Subject;
-import com.estivman.secondproject.DynamicMemory.UptcList;
+import com.estivman.uptc_list_library.DynamicMemory.UptcList;
+
 
 @Service
-public class QueriesService implements IQueriesInterface{
+public class QueriesService implements IQueriesInterface {
     private final GroupService groupService;
     private final SubjectService subjectService;
-    private final PlaceService placeService;
-
     private UptcList<Group> groups;
     private UptcList<Subject> subjects;
 
     @Autowired
-    public QueriesService(GroupService groupService, SubjectService subjectService, PlaceService placeService) {
-        this.placeService = placeService;
+    public QueriesService(GroupService groupService, SubjectService subjectService) {
         this.subjectService = subjectService;
         this.groupService = groupService;
-    }
-
-    public void loadAllServices() throws ProjectException {
-        groups = groupService.loadGroups();
-        subjects = subjectService.loadSubjects();
-        placeService.loadPlaces();
     }
 
     public UptcList<Subject> subjectsWithSamePlace() throws ProjectException {
 
         UptcList<Subject> subjectsFiltered = new UptcList<>();
+        groups = groupService.getGroups();
         int amount = 0;
         try {
             for (int i = 0; i < groups.size(); i++) {
@@ -60,6 +53,8 @@ public class QueriesService implements IQueriesInterface{
         UptcList<Group> groupsFiltered = new UptcList<>();
         UptcList<Subject> subjectsFiltered = new UptcList<>();
         try {
+            groups = groupService.getGroups();
+
             for (Group group : groups) {
                 // Search all coincidences of the place searched
                 if (group.getPlaceGroupId().equals(placeSeached.getPlaceId())) {
@@ -82,6 +77,10 @@ public class QueriesService implements IQueriesInterface{
 
     public UptcList<Subject> subjectsWithMultipleGroups() throws ProjectException {
         try {
+
+            groups = groupService.getGroups();
+            subjects = subjectService.getSubjects();
+
             UptcList<Subject> subjectsTmp = subjects;
             UptcList<Subject> subjectsFounded = new UptcList<Subject>();
             UptcList<Group> groupsTmp = groups;
@@ -105,6 +104,8 @@ public class QueriesService implements IQueriesInterface{
 
     public UptcList<Subject> subjectsWithSameSchedule() throws ProjectException {
         try {
+            groups = groupService.getGroups();
+
             UptcList<Subject> subjectsFounded = new UptcList<Subject>();
             UptcList<Group> groupsTmp = groups;
             int amount = 0;
@@ -114,7 +115,8 @@ public class QueriesService implements IQueriesInterface{
                     if (isScheduleSame(groupsTmp.get(i).getGroupSchedules(), groupsTmp.get(j).getGroupSchedules())) {
                         amount++;
                     }
-                    if (amount >= 2 && !subjectsFounded.contains(getSubjectFromCode(groupsTmp.get(i).getSubjectGroupCode()))) {
+                    if (amount >= 2
+                            && !subjectsFounded.contains(getSubjectFromCode(groupsTmp.get(i).getSubjectGroupCode()))) {
                         subjectsFounded.add(getSubjectFromCode(groupsTmp.get(i).getSubjectGroupCode()));
                     }
                 }
@@ -128,7 +130,8 @@ public class QueriesService implements IQueriesInterface{
         }
     }
 
-    private Subject getSubjectFromCode(String code) {
+    private Subject getSubjectFromCode(String code) throws ProjectException {
+        subjects = subjectService.getSubjects();
         for (Subject subject : subjects) {
             if (subject.getSubjectCode().equals(code)) {
                 return subject;
@@ -138,7 +141,8 @@ public class QueriesService implements IQueriesInterface{
         return null;
     }
 
-    private boolean validateSubject(UptcList<Group> groupsFiltered, UptcList<Subject> subjectsFiltered, int i, int j) {
+    private boolean validateSubject(UptcList<Group> groupsFiltered, UptcList<Subject> subjectsFiltered, int i, int j)
+            throws ProjectException {
         return groupsFiltered.get(i).getSubjectGroupCode().equals(groupsFiltered.get(j).getSubjectGroupCode())
                 && !subjectsFiltered.contains(getSubjectFromCode(groupsFiltered.get(j).getSubjectGroupCode()));
     }

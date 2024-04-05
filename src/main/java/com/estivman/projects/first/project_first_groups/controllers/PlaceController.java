@@ -9,14 +9,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.estivman.projects.first.project_first_groups.dtos.PlaceDto;
 import com.estivman.projects.first.project_first_groups.exceptions.ProjectException;
 import com.estivman.projects.first.project_first_groups.model.Place;
 import com.estivman.projects.first.project_first_groups.services.PlaceService;
-import com.estivman.secondproject.DynamicMemory.UptcList;
+import com.estivman.uptc_list_library.DynamicMemory.UptcList;
 
 @RestController
 @RequestMapping("/place")
@@ -25,19 +24,7 @@ public class PlaceController {
     @Autowired
     private PlaceService placeService;
 
-    @GetMapping("/loadPlaces")
-    public ResponseEntity<Object> loadPlaces() {
-        UptcList<Place> places;
-        try {
-            places = placeService.loadPlaces();
-            return ResponseEntity.status(HttpStatus.OK).body(places);
-        } catch (ProjectException e) {
-            return ResponseEntity.status(e.getMenssage().getCodeHttp())
-                    .body(e.getMenssage());
-        }
-
-    }
-    @GetMapping("/getPlaces")
+    @GetMapping()
     public ResponseEntity<Object> getPlaces() {
         UptcList<Place> places;
         try {
@@ -82,20 +69,6 @@ public class PlaceController {
         }
     }
 
-    @PutMapping("/putPlaceParam")
-    public ResponseEntity<Object> putPlaceParam(@RequestParam String searchField, @RequestParam String searchValue,
-            @RequestBody PlaceDto placeDto) {
-        try {
-            PlaceDto.validatePlace(placeDto);
-            Place place = PlaceDto.fromPlaceDto(placeDto);
-            placeService.updatePlaceThroughParam(searchField, searchValue, place);
-            return ResponseEntity.status(HttpStatus.OK).body(place);
-        } catch (ProjectException e) {
-            return ResponseEntity.status(e.getMenssage().getCodeHttp())
-                    .body(e.getMenssage());
-        }
-    }
-
     @DeleteMapping()
     public ResponseEntity<Object> deletePlace(@RequestBody PlaceDto dto) {
         try {
@@ -109,14 +82,4 @@ public class PlaceController {
         }
     }
 
-    @DeleteMapping("/deletePlaceParam")
-    public ResponseEntity<Object> deletePlaceParam(@RequestParam String searchField, @RequestParam String searchValue) {
-        try {
-            placeService.deletePlaceThroughParam(searchField, searchValue);
-            return ResponseEntity.status(HttpStatus.OK).body("Element deleted successfully");
-        } catch (ProjectException e) {
-            return ResponseEntity.status(e.getMenssage().getCodeHttp())
-                    .body(e.getMenssage());
-        }
-    }
 }

@@ -12,7 +12,7 @@ import com.estivman.projects.first.project_first_groups.exceptions.ProjectExcept
 import com.estivman.projects.first.project_first_groups.model.Place;
 import com.estivman.projects.first.project_first_groups.model.Subject;
 import com.estivman.projects.first.project_first_groups.services.QueriesService;
-import com.estivman.secondproject.DynamicMemory.UptcList;
+import com.estivman.uptc_list_library.DynamicMemory.UptcList;
 
 @RestController
 @RequestMapping("/queries")
@@ -21,17 +21,6 @@ public class QueriesController {
     @Autowired
     private QueriesService loaderService;
 
-    @GetMapping("/load")
-    public ResponseEntity<Object> loadData() {
-        try {
-            loaderService.loadAllServices();
-            return ResponseEntity.status(HttpStatus.OK).body("All data loaded successfully");
-        } catch (ProjectException e) {
-            return ResponseEntity.status(e.getMenssage().getCodeHttp())
-                    .body(e.getMenssage());
-        }
-
-    }
 
     @GetMapping("/subject-places")
     public ResponseEntity<Object> subjectsWithSamePlace() {

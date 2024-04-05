@@ -1,40 +1,24 @@
 package com.estivman.projects.first.project_first_groups.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.estivman.json.json_library.Services.JsonFunctions;
 import com.estivman.projects.first.project_first_groups.exceptions.ExceptionType;
 import com.estivman.projects.first.project_first_groups.exceptions.ProjectException;
 import com.estivman.projects.first.project_first_groups.interfaces.IPlaceInterface;
 import com.estivman.projects.first.project_first_groups.model.Group;
 import com.estivman.projects.first.project_first_groups.model.Place;
-import com.estivman.secondproject.DynamicMemory.UptcList;
+import com.estivman.uptc_list_library.DynamicMemory.UptcList;
 
 @Service
 public class PlaceService implements IPlaceInterface {
-    private final JsonFunctions jsonFunctions;
     private final GroupService groupService;
     private UptcList<Place> places = new UptcList<Place>();
-    private boolean isDataLoaded = false;
-
     @Autowired
-    public PlaceService(@Value("${json.place.path}") String placePath,
-            @Value("${json.place.root-element}") String placeRootElement, GroupService groupService) {
-        this.jsonFunctions = new JsonFunctions(placePath, placeRootElement);
+    public PlaceService(GroupService groupService) {
         this.groupService = groupService;
     }
 
-    public UptcList<Place> loadPlaces() throws ProjectException {
-        try {
-            places = jsonFunctions.getFromJSON(Place.class);
-            isDataLoaded = true;
-        } catch (Exception e) {
-            throw new ProjectException(ExceptionType.NOT_FOUND_FILE);
-        }
-        return places;
-    }
 
     public UptcList<Place> getPlaces() throws ProjectException {
         try {
@@ -47,9 +31,6 @@ public class PlaceService implements IPlaceInterface {
     public void addPlace(Place place) throws ProjectException {
         try {
             places.add(place);
-            if (isDataLoaded) {
-                jsonFunctions.addObjectToJSON(place);
-            }
         } catch (Exception e) {
             throw new ProjectException(ExceptionType.NOT_FOUND_FILE);
         }
@@ -60,9 +41,6 @@ public class PlaceService implements IPlaceInterface {
             for (Place place : places) {
                 if (doesPlaceMatch(placeSearched, place) && !isAttachedToGroup(place)) {
                     places.remove(place);
-                    if (isDataLoaded) {
-                        jsonFunctions.postInJSON(places);
-                    }
                     return places;
                 }
             }
@@ -79,35 +57,11 @@ public class PlaceService implements IPlaceInterface {
             for (Place place : places) {
                 if (doesPlaceMatch(placeSearched, place) && placeSearched != null) {
                     places.set(index, placeUpdated);
-                    if (isDataLoaded) {
-                        jsonFunctions.postInJSON(places);
-                    }
                     return places;
                 }
                 index++;
 
             }
-        } catch (Exception e) {
-            throw new ProjectException(ExceptionType.NOT_FOUND_FILE);
-        }
-        throw new ProjectException(ExceptionType.NOT_FOUND);
-
-    }
-
-    public UptcList<Place> updatePlaceThroughParam(String searchField, String searchValue, Place placeUpdated)
-            throws ProjectException {
-        try {
-            places = jsonFunctions.putInJSON(places, searchField, searchValue, placeUpdated);
-        } catch (Exception e) {
-            throw new ProjectException(ExceptionType.NOT_FOUND_FILE);
-        }
-        throw new ProjectException(ExceptionType.NOT_FOUND);
-
-    }
-
-    public UptcList<Place> deletePlaceThroughParam(String searchField, String searchValue) throws ProjectException {
-        try {
-            places = jsonFunctions.deleteFromJSON(places, searchField, searchValue);
         } catch (Exception e) {
             throw new ProjectException(ExceptionType.NOT_FOUND_FILE);
         }

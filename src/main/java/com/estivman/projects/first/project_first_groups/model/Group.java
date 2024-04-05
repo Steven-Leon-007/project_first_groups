@@ -2,7 +2,7 @@ package com.estivman.projects.first.project_first_groups.model;
 
 import java.io.Serializable;
 
-import com.estivman.secondproject.DynamicMemory.UptcList;
+import com.estivman.uptc_list_library.DynamicMemory.UptcList;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
